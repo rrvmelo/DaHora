@@ -1,4 +1,21 @@
 {
+  "name": "dahora",
+  "version": "1.0.0",
+  "description": "Projeto Integrador III",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrvmelo/DaHora.git"
+  },
+  "author": "2004974@aluno.univesp.br",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rrvmelo/DaHora/issues"
+  },
+  "homepage": "https://github.com/rrvmelo/DaHora#readme",
   "dependencies": {
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",

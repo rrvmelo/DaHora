@@ -3,7 +3,7 @@ module.exports = {
     host: 'localhost',
     username: 'user',
     password: 'Mininova.Org..',
-    database: 'companysql',
+    database: 'dahora',
     define: {
         timestamps: true,
     },
