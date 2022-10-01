@@ -4,17 +4,13 @@ module.exports = {
     async index(req, res) {
         const registers = await Register.findAll();
 
-        return res,json(registers);
+        return res.json(registers);
     },
 
     async store(req, res) {
-        const {
-            entrada
-        } = req.body;
+        const {entrada} = req.body;
 
-        const register = await Register.create({
-            entrada
-        });
+        const register = await Register.create({entrada});
         return res.json(register);
     }
 };

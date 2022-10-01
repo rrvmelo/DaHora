@@ -6,7 +6,7 @@ class Benefit extends Model {
             beneficio: DataTypes.STRING,
             porcentagemCalculo: DataTypes.STRING,
             valorDiario: DataTypes.FLOAT,
-            descrição: DataTypes.STRING,
+            descricao: DataTypes.STRING,
         }, {
             sequelize
         })

@@ -7,7 +7,8 @@ class User extends Model {
         cpf: DataTypes.STRING,
         email: DataTypes.STRING,
         funcao: DataTypes.STRING,
-        senha: DataTypes.STRING
+        senha: DataTypes.STRING,
+        entrada: DataTypes.STRING
     }, {
       sequelize
     })
