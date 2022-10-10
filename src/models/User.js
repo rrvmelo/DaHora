@@ -8,16 +8,13 @@ class User extends Model {
         email: DataTypes.STRING,
         funcao: DataTypes.STRING,
         senha: DataTypes.STRING,
-        entrada: DataTypes.STRING
+        entrada: DataTypes.STRING,
+        ativo: DataTypes.BOOLEAN,
+        isRH: DataTypes.BOOLEAN,
     }, {
       sequelize
     })
   }
-
-  /*static associate(models) {
-    this.hasMany(models.Address, { foreignKey: 'user_id', as: 'addresses' });
-    this.belongsToMany(models.Tech, { foreignKey: 'user_id', through: 'user_techs', as: 'techs' });
-  }*/
 }
 
 module.exports = User;

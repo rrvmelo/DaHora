@@ -20,6 +20,8 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
         allowNull: false,
+        isEmail: true,
+        isLowercase: true,
       },    
       funcao: {
         type: Sequelize.STRING,
@@ -32,6 +34,17 @@ module.exports = {
       entrada: {
         type: Sequelize.STRING,
         allowNull: false,
+        isAlphanumeric: true,
+      },
+      ativo: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      isRH: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,

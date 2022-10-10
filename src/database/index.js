@@ -4,7 +4,7 @@ const dbConfig = require('../config/database');
 const Occupation = require('../models/Occupation');
 const User = require('../models/User');
 const Benefit = require('../models/Benefit');
-const Register = require('../models/Register');
+const Register = require('../models/Record');
 
 const connection = new Sequelize(dbConfig);
 
