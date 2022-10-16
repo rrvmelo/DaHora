@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   async index(req, res) {
@@ -8,10 +9,22 @@ module.exports = {
   },
 
   async store(req, res) {
-    const { name, cpf, email, funcao, senha, entrada, ativo, isRH } = req.body;
+    const user = req.body;
 
-    const user = await User.create({ name, cpf, email, funcao, senha, entrada, ativo, isRH });
+    user.senha = await bcrypt.hashSync(user.senha, 8);
 
-    return res.json(user);
+    await User.create(user)
+    .then(() => {
+      return res.json({
+        erro: false,
+        mensagem: "Usuário cadastrado com sucesso!",
+        user
+      });
+    }).catch(() => {
+      return res.status(400).json ({
+        erro: true,
+        mensagem: "Erro: Usuário não cadastrado, verifique os dados inseridos!"
+      });
+    });
   }
 };

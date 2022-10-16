@@ -1,26 +1,39 @@
 const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
+const { promisify } = require('util');
 
-module.exports = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+module.exports = {
+    eAdmin: async function (req, res, next){
+        const authHeader = req.headers.authorization;
 
-    if(!authHeader)
-        return res.status(401).send({ error: 'Token não informado'});
+        if(!authHeader)
+            return res.status(401).send({ 
+                erro: true,
+                mensagem: "Token não informado"});
 
-    const parts = authHeader.split(' ');
+        const parts = authHeader.split(' ');
 
-    if(!parts.length === 2)
-        return res.status(401).send({ error: 'Erro de token' });
+        if(!parts.length === 2)
+            return res.status(401).send({ 
+                erro: true,
+                mensagem: "Erro de token" });
 
-    const [ scheme, token ] = parts
+        const [ scheme, token ] = parts
 
-    if(!/^Bearer$/i.test(scheme))
-        return res.status(401).send({ error: 'Token em formato incorreto' });
+        if(!/^Bearer$/i.test(scheme))
+            return res.status(401).send({ 
+                erro: true,
+                mensagem: "Token em formato incorreto!" });
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
-        if (err) return res.status(401).send({ error: 'Token inválido'});
-
-        req.userId = decoded.id;
-        return next();
-    });
+        try{
+            const decode = await promisify(jwt.verify)(token, authConfig.secret);
+            req.userId = decode.id;
+            return next();
+        }catch(err){
+            return res.status(401).json({ 
+                erro: true,
+                mensagem: "Token inválido!"
+            });
+        }
+    }
 };

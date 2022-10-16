@@ -1,26 +1,38 @@
-const express = require("express");
-const router = express.Router();
-const User = require("../models/User");
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
-const authConfig = require('..config/auth')
+const jwt = require('jsonwebtoken');
+const authConfig = require('../config/auth.json');
 
-router.post('/authenticate', async (req, res) =>{
-    const { cpf , senha} = req.body;
+module.exports = {
+    async store(req, res) {
+        const {
+            cpf, 
+            senha
+        } = req.body;  
 
-    const user = await User.findOne({ cpf }).select('+senha');
+        const user = await User.findOne({
+            attributes: ['id', 'name', 'email', 'cpf', 'senha'],
+            where: {
+                cpf: req.body.cpf
+            }
+        });
 
-    if (!user)
-        return res.status(400).send({ error: 'Usuário não encontrado'});
+        if (!user)
+            return res.status(400).send({ error: 'Usuário não encontrado'});
 
-    if (!await bcrypt.compare(senha, user.senha))
-        return res.status(400).send({ error: 'Senha Invalida'});
+        if (!(await bcrypt.compare(req.body.senha, user.senha))){
+            return res.status(400).send({ error: 'Senha Inválida'});
+        };
+            
+        user.senha = undefined;
 
-    user.senha = undefined;
+        const token = jwt.sign({
+            id: user.id
+            }, 
+            authConfig.secret, {
+            expiresIn: 43200,
+        });
 
-    const token = jwt.sign({ id: user.id }, authConfig.secret, {expriresIn: 43200,
-    });
-
-    res.send({ user, token });
-
-});
+        res.send({ user, token });
+    }
+};
