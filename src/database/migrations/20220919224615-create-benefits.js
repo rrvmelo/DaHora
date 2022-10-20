@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('benefits', { 
+    return queryInterface.createTable("benefits", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -11,9 +11,9 @@ module.exports = {
       },
       beneficio: {
         type: Sequelize.STRING,
-        allowNull: false,        
+        allowNull: false,
       },
-      porcentagemCalculo:{
+      porcentagemCalculo: {
         type: Sequelize.STRING,
       },
       valorDiario: {
@@ -35,7 +35,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('benefits');
-    
-  }
+    return queryInterface.dropTable("benefits");
+  },
 };
