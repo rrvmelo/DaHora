@@ -1,10 +1,10 @@
-const Sequelize = require('sequelize');
-const dbConfig = require('../config/database');
+const Sequelize = require("sequelize");
+const dbConfig = require("../config/database");
 
-const Occupation = require('../models/Occupation');
-const User = require('../models/User');
-const Benefit = require('../models/Benefit');
-const Register = require('../models/Record');
+const Occupation = require("../models/Occupation");
+const User = require("../models/User");
+const Benefit = require("../models/Benefit");
+const Register = require("../models/Record");
 
 const connection = new Sequelize(dbConfig);
 
@@ -13,5 +13,6 @@ User.init(connection);
 Benefit.init(connection);
 Register.init(connection);
 
+Register.associate(connection.models);
 
 module.exports = connection;

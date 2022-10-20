@@ -9,5 +9,10 @@ class Record extends Model {
             sequelize
         })
     }
+
+    static associate(models) {
+        this.belongsTo(models.User, {foreignKey: 'userId', as: 'user'})
+    }
 }
+
 module.exports = Record;
