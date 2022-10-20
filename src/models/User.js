@@ -1,18 +1,19 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 class User extends Model {
   static init(sequelize) {
-    super.init({
+    super.init(
+      {
         name: {
           type: DataTypes.STRING,
-          allowNull: false
+          allowNull: false,
         },
         cpf: {
           type: DataTypes.STRING(11),
           allowNull: false,
           unique: true,
         },
-        email:{ 
+        email: {
           type: DataTypes.STRING,
           allowNull: false,
           unique: true,
@@ -40,9 +41,14 @@ class User extends Model {
           allowNull: false,
           defaultValue: false,
         },
-    }, {
-      sequelize
-    })
+      },
+      {
+        sequelize,
+      }
+    );
+  }
+  static associate(models) {
+    this.hasMany(models.Record, { foreignKey: "UserId", as: "records" });
   }
 }
 

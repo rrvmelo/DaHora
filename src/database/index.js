@@ -13,6 +13,8 @@ User.init(connection);
 Benefit.init(connection);
 Register.init(connection);
 
+User.associate(connection.models);
 Register.associate(connection.models);
+
 
 module.exports = connection;

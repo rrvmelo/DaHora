@@ -40,6 +40,7 @@ module.exports = {
     const user = req.body;
     const userData = await User.findOne({
       where: { id: user.id },
+      attributes: { exclude: ["senha"]}
     });
     if (userData == undefined) {
       return res.status(400).json({

@@ -24,7 +24,8 @@ routes.get("/benefits", BenefitController.index); /*Adicionar o eAdmin*/
 routes.post("/benefits", BenefitController.store); /*Adicionar o eAdmin*/
 routes.put("/benefits", BenefitController.update); /*Adicionar o eAdmin*/
 
-routes.get("/records", RecordController.index);
+routes.get("/records", RecordController.index); /*Adicionar o eAdmin*/
+routes.get("/records/:userId/", RecordController.indexId); /*Adicionar o eAdmin*/
 routes.post("/records", RecordController.store);
 
 module.exports = routes;

@@ -8,6 +8,16 @@ module.exports = {
     return res.json(records);
   },
 
+  async indexId(req, res) {
+    const { userId } = req.params;
+
+    const user = await User.findByPk(userId, {
+      include: { association: "records" },
+      attributes: { exclude: ["email", "senha", "isRH", "entrada"] },
+    });
+    return res.json(user);
+  },
+
   async store(req, res) {
     const entrada = req.body.entrada;
     const userDado = await User.findOne({ where: { entrada: entrada } });
