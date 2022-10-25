@@ -15,6 +15,7 @@ routes.post("/auth", AuthController.store);
 routes.get("/occupations", OccupationController.index); /*Adicionar o eAdmin*/
 routes.post("/occupations", OccupationController.store); /*Adicionar o eAdmin*/
 routes.put("/occupations", OccupationController.update); /*Adicionar o eAdmin*/
+routes.delete("/occupations", OccupationController.delete);/*Adicionar o eAdmin*/
 
 routes.get("/users", UserController.index); /*Adicionar o eAdmin*/
 routes.post("/users", UserController.store); /*Adicionar o eAdmin*/
