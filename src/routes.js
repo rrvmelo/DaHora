@@ -21,11 +21,10 @@ routes.get("/users", UserController.index); /*Adicionar o eAdmin*/
 routes.post("/users", UserController.store); /*Adicionar o eAdmin*/
 routes.put("/users", UserController.update); /*Adicionar o eAdmin*/
 
-
-
 routes.get("/benefits", BenefitController.index); /*Adicionar o eAdmin*/
 routes.post("/benefits", BenefitController.store); /*Adicionar o eAdmin*/
 routes.put("/benefits", BenefitController.update); /*Adicionar o eAdmin*/
+routes.delete("/benefits", BenefitController.delete); /*Adicionar o eAdmin*/
 
 routes.get("/records", RecordController.index); /*Adicionar o eAdmin*/
 routes.post("/records", RecordController.store);

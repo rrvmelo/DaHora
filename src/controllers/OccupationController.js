@@ -9,11 +9,21 @@ module.exports = {
   },
 
   async store(req, res) {
-    const { funcao, vencimento } = req.body;
+    const occupation = req.body;
+    const occupationData = await Occupation.findOne({
+      where: { funcao: occupation.funcao },
+    });
 
-    const occupation = await Occupation.create({ funcao, vencimento });
-
-    return res.json(occupation);
+    if (occupation.funcao == occupationData) {
+      if (occupationData == null) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: " Ocupação duplicada ou nula, por favor verifique",
+        });
+      }
+    }
+    await Occupation.create(occupation);
+    return res.status(200).json("Deu certo");
   },
 
   async update(req, res) {
