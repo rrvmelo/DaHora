@@ -13,7 +13,9 @@ User.init(connection);
 Benefit.init(connection);
 Register.init(connection);
 
+/*Occupation.associate(connection.models);*/
 User.associate(connection.models);
+Benefit.associate(connection.models);
 Register.associate(connection.models);
 
 

@@ -48,7 +48,15 @@ class User extends Model {
     );
   }
   static associate(models) {
-    this.hasMany(models.Record, { foreignKey: "UserId", as: "records" });
+    this.hasMany(models.Record, {
+      foreignKey: "UserId",
+      as: "records",
+    });
+    this.belongsToMany(models.Benefit, {
+      foreignKey: "userId",
+      through: "userBenefits",
+      as: "benefits",
+    });
   }
 }
 

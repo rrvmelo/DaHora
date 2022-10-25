@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const Benefit = require("../models/Benefit");
 
 module.exports = {
@@ -43,5 +44,58 @@ module.exports = {
         benefit, //Tirar antes de publicar
       });
     }
+  },
+
+  async indexId(req, res) {
+    const { userId } = req.params;
+
+    const user = await User.findByPk(userId, {
+      include: { association: "benefits", through: { attributes: [] } },
+    });
+    return res.json(user.benefits);
+  },
+
+  async storeId(req, res) {
+    const { userId } = req.params;
+    const { beneficio } = req.body;
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        erro: false,
+        mensagem: "Usuário não encontrado!",
+      });
+    }
+
+    const benefit = await Benefit.findOne({ where: { beneficio: beneficio } });
+
+    await user.addBenefit(benefit);
+
+    return res.status(200).json({
+      erro: false,
+      mensagem: "Beneficio OK",
+      user,
+      benefit,
+    });
+  },
+
+  async deleteId(req, res) {
+    const { userId } = req.params;
+    const { beneficio } = req.body;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        erro: false,
+        mensagem: "Usuário não encontrado!",
+      });
+    }
+
+    const benefit = await Benefit.findOne({ where: { beneficio: beneficio } });
+
+    await user.removeBenefit(benefit);
+
+    return res.status(200).json();
   },
 };

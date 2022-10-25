@@ -1,3 +1,4 @@
+
 const User = require("../models/User");
 const Record = require("../models/Record");
 
@@ -22,7 +23,19 @@ module.exports = {
     const entrada = req.body.entrada;
     const userDado = await User.findOne({ where: { entrada: entrada } });
 
+    
+
     const userId = await userDado.id;
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        erro: false,
+        mensagem: "Usuário não encontrado!",
+      });
+    }
+
 
     await Record.create({
       entrada,

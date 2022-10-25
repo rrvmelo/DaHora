@@ -20,12 +20,22 @@ routes.get("/users", UserController.index); /*Adicionar o eAdmin*/
 routes.post("/users", UserController.store); /*Adicionar o eAdmin*/
 routes.put("/users", UserController.update); /*Adicionar o eAdmin*/
 
+
+
 routes.get("/benefits", BenefitController.index); /*Adicionar o eAdmin*/
 routes.post("/benefits", BenefitController.store); /*Adicionar o eAdmin*/
 routes.put("/benefits", BenefitController.update); /*Adicionar o eAdmin*/
 
 routes.get("/records", RecordController.index); /*Adicionar o eAdmin*/
-routes.get("/records/:userId/", RecordController.indexId); /*Adicionar o eAdmin*/
 routes.post("/records", RecordController.store);
+
+routes.get("/users/:userId/records/", RecordController.indexId); /*Adicionar o eAdmin*/
+
+routes.get("/users/:userId/benefits/", BenefitController.indexId); /*Adicionar o eAdmin*/
+routes.post("/users/:userId/benefits/", BenefitController.storeId); /*Adicionar o eAdmin*/
+routes.delete("/users/:userId/benefits/", BenefitController.deleteId); /*Adicionar o eAdmin*/
+
+
+routes.get("/users/:iserId/records/", RecordController.indexId); /*Adicionar o eAdmin*/
 
 module.exports = routes;

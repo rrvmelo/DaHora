@@ -14,7 +14,9 @@ class Record extends Model {
   }
 
   static associate(models) {
+    this.removeAttribute("entrada");
     this.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+    
   }
 }
 

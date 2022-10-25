@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("records", {
+    return queryInterface.createTable("userBenefits", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -15,12 +15,18 @@ module.exports = {
         references: { model: "users", key: "id" },
         onUpdate: "CASCADE",
       },
-      entrada: {
-        type: Sequelize.STRING,
+      benefitId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        isAlphanumeric: true,
+        references: { model: "benefits", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
       },
@@ -28,6 +34,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("records");
+    return queryInterface.dropTable("userBenefits");
   },
 };
