@@ -6,17 +6,17 @@ class Record extends Model {
       {
         entrada: DataTypes.STRING,
         userId: DataTypes.STRING,
+        
       },
       {
         sequelize,
+        updatedAt: false,
       }
     );
   }
 
   static associate(models) {
-    this.removeAttribute("entrada");
     this.belongsTo(models.User, { foreignKey: "userId", as: "user" });
-    
   }
 }
 

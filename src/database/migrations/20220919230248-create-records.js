@@ -18,10 +18,9 @@ module.exports = {
       entrada: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlphanumeric: true,
       },
       createdAt: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
     });
