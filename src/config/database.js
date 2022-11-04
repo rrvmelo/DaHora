@@ -1,8 +1,8 @@
 module.exports = {
     dialect: 'mysql',
     host: 'localhost',
-    username: 'user',
-    password: 'Mininova.Org..',
+    username: 'root',
+    password: 'admin',
     database: 'dahora',
     define: {
         timestamps: true,
