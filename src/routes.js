@@ -36,6 +36,4 @@ routes.post("/users/:userId/benefits/", BenefitController.storeId); /*Adicionar 
 routes.delete("/users/:userId/benefits/", BenefitController.deleteId); /*Adicionar o eAdmin*/
 
 
-routes.get("/users/:iserId/records/", RecordController.indexId); /*Adicionar o eAdmin*/
-
 module.exports = routes;

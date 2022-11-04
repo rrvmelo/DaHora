@@ -46,9 +46,7 @@ module.exports = {
     }
   },
 
-  async delete(req, res) {
-
-  },
+  async delete(req, res) {},
 
   async indexId(req, res) {
     const { userId } = req.params;
