@@ -23,7 +23,7 @@ module.exports = {
       }
     }
     await Occupation.create(occupation);
-    return res.status(200).json("Deu certo");
+    return res.status(200);
   },
 
   async update(req, res) {

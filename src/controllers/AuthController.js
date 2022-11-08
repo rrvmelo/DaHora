@@ -14,10 +14,16 @@ module.exports = {
       },
     });
 
-    if (!user) return res.status(400).send({ error: "Usuário não encontrado" });
+    if (!user) return res.status(400).send({ 
+      erro: true,
+      mensagem: "Usuário ou senha inválido"
+    });
 
     if (!(await bcrypt.compare(req.body.senha, user.senha))) {
-      return res.status(400).send({ error: "Senha Inválida" });
+      return res.status(400).send({       
+        erro: true,
+        mensagem: "Usuário ou senha inválido"
+      });
     }
 
     user.senha = undefined;
