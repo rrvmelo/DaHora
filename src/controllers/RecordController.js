@@ -1,3 +1,4 @@
+const moment = require('moment');
 const User = require("../models/User");
 const Record = require("../models/Record");
 
@@ -39,19 +40,14 @@ module.exports = {
         mensagem: "Usuário não encontrado!",
       });
     }
-
-    const today = new Date();
-    const ano = today.getFullYear();
-    const mes = today.getMonth() + 1;
-    const dia = today.getDate();
-    const date = ano + "-" + mes + "-" + dia;
+    const today = moment().format('YYYY-MM-DD')
 
     const record = await Record.findOne({
-      where: { entrada: entrada, createdAt: date },
+      where: { entrada: entrada, createdAt: today },
     });
 
     if (record != null) {
-      if (record.createdAt == date) {
+      if (record.createdAt == today) {
         return res.status(200).json();
       }
     } else {
