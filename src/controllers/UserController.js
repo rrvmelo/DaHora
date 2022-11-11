@@ -7,6 +7,14 @@ module.exports = {
     return res.json(users);
   },
 
+  async indexs(req, res) {
+    const { userId } = req.params;
+    const users = await User.findByPk(userId, {
+      attributes: { exclude: "senha" },
+    });
+    return res.json(users);
+  },
+
   async store(req, res) {
     const user = req.body;
     const userData = await User.findOne({ where: { cpf: user.cpf } });
