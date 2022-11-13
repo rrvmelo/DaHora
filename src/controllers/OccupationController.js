@@ -3,9 +3,39 @@ const User = require("../models/User");
 
 module.exports = {
   async index(req, res) {
-    const occupations = await Occupation.findAll();
+    let { limit } = Number(req.query.limit);
+    let { offset } = Number(req.query.offset);
 
-    return res.json(occupations);
+    if (!limit) {
+      limit = 10;
+    }
+
+    if (!offset) {
+      offset = 0;
+    }
+
+    const occupations = await Occupation.findAll({ offset: offset, limit: limit });
+    const total = await Occupation.count();
+    const currentUrl = req.originalUrl;
+    const next = offset + limit;
+    const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+
+    const previous = offset - limit < 0 ? null : offset - limit;
+    const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${offset}` : null;
+
+    return res.send({ 
+      nextUrl,
+      previousUrl,
+      limit,
+      offset,
+      total,
+
+      results: occupations.map((item) => ({
+        id: item.id,
+        funcao: item.funcao,
+        vencimento: item.vencimento
+      })),
+    });
   },
 
   async store(req, res) {

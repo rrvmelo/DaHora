@@ -3,9 +3,43 @@ const Benefit = require("../models/Benefit");
 
 module.exports = {
   async index(req, res) {
-    const benefits = await Benefit.findAll();
+    console.log(req.originalUrl)
+    let { limit } = Number(req.query.limit);
+    let { offset } = Number(req.query.offset);
 
-    return res.json(benefits);
+    if (!limit) {
+      limit = 10;
+    }
+
+    if (!offset) {
+      offset = 0;
+    }
+
+    const benefits = await Benefit.findAll({ offset: offset, limit: limit });
+    const total = await Benefit.count();
+    const currentUrl = req.originalUrl;
+    const next = offset + limit;
+    const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+
+    const previous = offset - limit < 0 ? null : offset - limit;
+    const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${offset}` : null;
+
+    
+    return res.send({ 
+      nextUrl,
+      previousUrl,
+      limit,
+      offset,
+      total,
+
+      results: benefits.map((item) => ({
+        id: item.id,
+        beneficio: item.beneficio,
+        porcentagemCalculo: item.porcentagemCalculo,
+        valorDiario: item.valorDiario,
+        descricao: item.descricao
+      })),
+    });
   },
 
   async store(req, res) {

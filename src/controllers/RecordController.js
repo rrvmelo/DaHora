@@ -4,9 +4,39 @@ const Record = require("../models/Record");
 
 module.exports = {
   async index(req, res) {
-    const records = await Record.findAll();
+    let { limit } = Number(req.query.limit);
+    let { offset } = Number(req.query.offset);
 
-    return res.json(records);
+    if (!limit) {
+      limit = 10;
+    }
+
+    if (!offset) {
+      offset = 0;
+    }
+
+    const records = await Record.findAll({ offset: offset, limit: limit });
+    const total = await Record.count();
+    const currentUrl = req.originalUrl;
+    const next = offset + limit;
+    const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+
+    const previous = offset - limit < 0 ? null : offset - limit;
+    const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${offset}` : null;
+
+    return res.send({ 
+      nextUrl,
+      previousUrl,
+      limit,
+      offset,
+      total,
+
+      results: records.map((item) => ({
+        id: item.id,
+        userId: item.userId,
+        createdAt: item.createdAt
+      })),
+    });
   },
 
   async indexId(req, res) {
