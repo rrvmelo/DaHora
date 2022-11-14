@@ -26,8 +26,10 @@ module.exports = {
             
         user.senha = undefined;
 
-        const token = jwt.sign({
-            id: user.id
+        const token = jwt.sign(
+            {
+                id: user.id,
+                userName: user.name
             }, 
             authConfig.secret, {
             expiresIn: 43200,
