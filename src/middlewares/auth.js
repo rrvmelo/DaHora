@@ -4,7 +4,7 @@ const { promisify } = require("util");
 
 module.exports = {
   eAdmin: async function (req, res, next) {
-    const authHeader = req.headers.authorization;
+    try{const authHeader = req.headers.authorization;
 
     if (!authHeader)
       return res.status(401).send({
@@ -45,5 +45,8 @@ module.exports = {
         });
       }
     }
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
   },
 };
