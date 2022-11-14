@@ -8,12 +8,12 @@ module.exports = {
     try {
       const { cpf, senha } = req.body;
 
-      const user = await User.findOne({
-        attributes: ["id", "name", "email", "cpf", "senha"],
-        where: {
-          cpf: req.body.cpf,
-        },
-      });
+    const user = await User.findOne({
+      attributes: ["id", "name", "email", "cpf", "senha", "isRH"],
+      where: {
+        cpf: req.body.cpf,
+      },
+    });
 
       if (!user)
         return res.status(400).send({
@@ -28,17 +28,17 @@ module.exports = {
         });
       }
 
-      user.senha = undefined;
+        const token = jwt.sign(
+            {
+                id: user.id,
+                userName: user.name,
+                isRH: user.isRH
+            }, 
+            authConfig.secret, {
+            expiresIn: 43200,
+        });
 
-      const token = jwt.sign(
-        {
-          id: user.id,
-        },
-        authConfig.secret,
-        {
-          expiresIn: 43200,
-        }
-      );
+      user.senha = undefined;
 
       res.send({ user, token });
     } catch (err) {
