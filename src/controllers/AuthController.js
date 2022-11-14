@@ -5,7 +5,8 @@ const authConfig = require("../config/auth.json");
 
 module.exports = {
   async store(req, res) {
-    const { cpf, senha } = req.body;
+    try {
+      const { cpf, senha } = req.body;
 
     const user = await User.findOne({
       attributes: ["id", "name", "email", "cpf", "senha", "isRH"],
@@ -14,18 +15,24 @@ module.exports = {
       },
     });
 
-    if (!user) return res.status(400).send({ error: "Usuário não encontrado" });
+      if (!user)
+        return res.status(400).send({
+          erro: true,
+          mensagem: "Usuário ou senha inválido",
+        });
 
-    if (!(await bcrypt.compare(req.body.senha, user.senha))) {
-      return res.status(400).send({ error: "Senha Inválida" });
-    }
-
-        console.log(user)
+      if (!(await bcrypt.compare(req.body.senha, user.senha))) {
+        return res.status(400).send({
+          erro: true,
+          mensagem: "Usuário ou senha inválido",
+        });
+      }
 
         const token = jwt.sign(
             {
                 id: user.id,
-                userName: user.name
+                userName: user.name,
+                isRH: user.isRH
             }, 
             authConfig.secret, {
             expiresIn: 43200,
@@ -33,6 +40,9 @@ module.exports = {
 
       user.senha = undefined;
 
-    res.send({ user, token });
+      res.send({ user, token });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
   },
 };
