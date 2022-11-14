@@ -8,7 +8,7 @@ module.exports = {
     const { cpf, senha } = req.body;
 
     const user = await User.findOne({
-      attributes: ["id", "name", "email", "cpf", "senha"],
+      attributes: ["id", "name", "email", "cpf", "senha", "isRH"],
       where: {
         cpf: req.body.cpf,
       },
@@ -20,7 +20,8 @@ module.exports = {
       return res.status(400).send({ error: "Senha Inválida" });
     }
 
-<<<<<<< HEAD
+        console.log(user)
+
         const token = jwt.sign(
             {
                 id: user.id,
@@ -29,19 +30,8 @@ module.exports = {
             authConfig.secret, {
             expiresIn: 43200,
         });
-=======
-    user.senha = undefined;
->>>>>>> 77babe312766101f41f324f54370452482656971
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-      },
-      authConfig.secret,
-      {
-        expiresIn: 43200,
-      }
-    );
+      user.senha = undefined;
 
     res.send({ user, token });
   },
