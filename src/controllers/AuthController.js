@@ -1,31 +1,26 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const authConfig = require('../config/auth.json');
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const authConfig = require("../config/auth.json");
 
 module.exports = {
-    async store(req, res) {
-        const {
-            cpf, 
-            senha
-        } = req.body;  
+  async store(req, res) {
+    const { cpf, senha } = req.body;
 
-        const user = await User.findOne({
-            attributes: ['id', 'name', 'email', 'cpf', 'senha'],
-            where: {
-                cpf: req.body.cpf
-            }
-        });
+    const user = await User.findOne({
+      attributes: ["id", "name", "email", "cpf", "senha"],
+      where: {
+        cpf: req.body.cpf,
+      },
+    });
 
-        if (!user)
-            return res.status(400).send({ error: 'Usuário não encontrado'});
+    if (!user) return res.status(400).send({ error: "Usuário não encontrado" });
 
-        if (!(await bcrypt.compare(req.body.senha, user.senha))){
-            return res.status(400).send({ error: 'Senha Inválida'});
-        };
-            
-        user.senha = undefined;
+    if (!(await bcrypt.compare(req.body.senha, user.senha))) {
+      return res.status(400).send({ error: "Senha Inválida" });
+    }
 
+<<<<<<< HEAD
         const token = jwt.sign(
             {
                 id: user.id,
@@ -34,7 +29,20 @@ module.exports = {
             authConfig.secret, {
             expiresIn: 43200,
         });
+=======
+    user.senha = undefined;
+>>>>>>> 77babe312766101f41f324f54370452482656971
 
-        res.send({ user, token });
-    }
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      authConfig.secret,
+      {
+        expiresIn: 43200,
+      }
+    );
+
+    res.send({ user, token });
+  },
 };

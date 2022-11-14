@@ -10,7 +10,7 @@ module.exports = {
   async store(req, res) {
     const user = req.body;
     const userData = await User.findOne({ where: { cpf: user.cpf } });
-   if (userData == undefined || user.cpf != userData.cpf  ) {
+    if (userData == undefined || user.cpf != userData.cpf) {
       user.senha = await bcrypt.hashSync(user.senha, 8);
 
       await User.create(user)
@@ -18,7 +18,7 @@ module.exports = {
           return res.status(200).json({
             erro: false,
             mensagem: "Usuário cadastrado com sucesso!",
-            user, //Tirar antes de publicar 
+            user, //Tirar antes de publicar
           });
         })
         .catch(() => {
@@ -40,7 +40,7 @@ module.exports = {
     const user = req.body;
     const userData = await User.findOne({
       where: { id: user.id },
-      attributes: { exclude: ["senha"]}
+      attributes: { exclude: ["senha"] },
     });
     if (userData == undefined) {
       return res.status(400).json({

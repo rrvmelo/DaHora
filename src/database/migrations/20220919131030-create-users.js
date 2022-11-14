@@ -34,8 +34,6 @@ module.exports = {
       },
       entrada: {
         type: Sequelize.STRING,
-        allowNull: false,
-        isAlphanumeric: true,
       },
       ativo: {
         type: Sequelize.BOOLEAN,
