@@ -9,7 +9,7 @@ module.exports = {
       const { cpf, senha } = req.body;
 
       const user = await User.findOne({
-        attributes: ["id", "name", "email", "cpf", "senha"],
+        attributes: ["id", "name", "email", "cpf", "senha", "isRH"],
         where: {
           cpf: req.body.cpf,
         },
@@ -33,6 +33,8 @@ module.exports = {
       const token = jwt.sign(
         {
           id: user.id,
+          userName: user.name,
+          isRH: user.isRH
         },
         authConfig.secret,
         {
