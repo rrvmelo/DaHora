@@ -3,7 +3,8 @@ const authConfig = require("../config/auth.json");
 const { promisify } = require("util");
 
 module.exports = {
-  eAdmin: async function (req, res, next) {
+  // Token para alterar senha
+  ePass: async function (req, res, next) {
     try {
       const authHeader = req.headers.authorization;
 
@@ -37,7 +38,7 @@ module.exports = {
         if (err.name == "TokenExpiredError") {
           return res.status(498).json({
             erro: true,
-            mensagem: "Acesso expirado! Por favor, faça login novamente",
+            mensagem: "Acesso expirado! Por favor, reinicie a operação",
           });
         } else {
           return res.status(498).json({

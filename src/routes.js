@@ -1,7 +1,9 @@
 const express = require("express");
 const { eAdmin } = require("./middlewares/auth");
+const { ePass } = require("./middlewares/valid");
 
 const AuthController = require("./controllers/AuthController");
+const PassController = require("./controllers/PassController");
 const OccupationController = require("./controllers/OccupationController");
 const UserController = require("./controllers/UserController");
 const BenefitController = require("./controllers/BenefitController");
@@ -9,34 +11,36 @@ const RecordController = require("./controllers/RecordController");
 const routes = express.Router();
 
 /*Adicionar o eAdmin*/
-
+//Autenticação para uso da aplicação
 routes.post("/auth", AuthController.store);
-
-routes.get("/occupations", OccupationController.index); /*Adicionar o eAdmin*/
-routes.get("/occupations/:occupationId/", OccupationController.indexs); /*Adicionar o eAdmin*/
-routes.post("/occupations", OccupationController.store); /*Adicionar o eAdmin*/
-routes.put("/occupations/:occupationId/", OccupationController.update); /*Adicionar o eAdmin*/
-routes.delete("/occupations", OccupationController.delete);/*Adicionar o eAdmin*/
-
-routes.get("/users", UserController.index); /*Adicionar o eAdmin*/
-routes.get("/users/:userId/", UserController.indexs); /*Adicionar o eAdmin*/ 
-routes.post("/users", UserController.store); /*Adicionar o eAdmin*/
-routes.put("/users", UserController.update); /*Adicionar o eAdmin*/
-
-routes.get("/benefits", BenefitController.index); /*Adicionar o eAdmin*/
-routes.get("/benefits/:benefitId/", BenefitController.indexs); /*Adicionar o eAdmin*/
-routes.post("/benefits", BenefitController.store); /*Adicionar o eAdmin*/
-routes.put("/benefits/:benefitId/", BenefitController.update); /*Adicionar o eAdmin*/
-routes.delete("/benefits", BenefitController.delete); /*Adicionar o eAdmin*/
-
-routes.get("/records", RecordController.index); /*Adicionar o eAdmin*/
-routes.post("/records", RecordController.store);
-
-routes.get("/users/:userId/records/", RecordController.indexId); /*Adicionar o eAdmin*/
-
-routes.get("/users/:userId/benefits/", BenefitController.indexId); /*Adicionar o eAdmin*/
-routes.post("/users/:userId/benefits/", BenefitController.storeId); /*Adicionar o eAdmin*/
-routes.delete("/users/:userId/benefits/", BenefitController.deleteId); /*Adicionar o eAdmin*/
-
+//Função do usuário na empresa
+routes.get("/occupations", OccupationController.index);
+routes.get("/occupations/:occupationId/", OccupationController.indexs);
+routes.post("/occupations", OccupationController.store);
+routes.put("/occupations/:occupationId/", OccupationController.update);
+routes.delete("/occupations", OccupationController.delete);
+//Usuários
+routes.get("/users", UserController.index);
+routes.get("/users/:userId/", UserController.indexs);
+routes.post("/users", UserController.store);
+routes.put("/users", UserController.update);
+//Nova senha com autenticação
+routes.post("/forgotpass", PassController.validator);
+routes.put("/forgotpass/:userId/", ePass, PassController.update);
+//Beneficios
+routes.get("/benefits", BenefitController.index);
+routes.get("/benefits/:benefitId/", BenefitController.indexs);
+routes.post("/benefits", BenefitController.store);
+routes.put("/benefits/:benefitId/", BenefitController.update);
+routes.delete("/benefits", BenefitController.delete);
+//Registros para calculo de beneficios
+routes.get("/records", RecordController.index);
+routes.post("/records", RecordController.store); /*Não adicionar o eAdmin*/
+//Relação registro x usuários
+routes.get("/users/:userId/records/", RecordController.indexId);
+//Beneficios
+routes.get("/users/:userId/benefits/", BenefitController.indexId);
+routes.post("/users/:userId/benefits/", BenefitController.storeId);
+routes.delete("/users/:userId/benefits/", BenefitController.deleteId);
 
 module.exports = routes;

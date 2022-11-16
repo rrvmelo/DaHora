@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 module.exports = {
+  //Busca de Usuários em Geral paginada
   async index(req, res) {
     try {
       let { limit } = Number(req.query.limit);
@@ -52,7 +53,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Busca de usuário por id
   async indexs(req, res) {
     try {
       const { userId } = req.params;
@@ -77,7 +78,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Adicionar novo usuário
   async store(req, res) {
     try {
       const user = req.body;
@@ -94,7 +95,7 @@ module.exports = {
             });
           })
           .catch(() => {
-            return res.status(400).json({
+            return res.status(400).send({
               erro: true,
               mensagem:
                 "Erro: Usuário não cadastrado, verifique os dados inseridos!",
@@ -110,7 +111,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Atualização de dados do usuário
   async update(req, res) {
     try {
       const user = req.body;
@@ -131,12 +132,12 @@ module.exports = {
       } else {
         await User.update(user, {
           where: { id: user.id },
-        });
+        }); 
 
         return res.status(200).json({
           erro: false,
           mensagem: "Atualizado!",
-          user, //Tirar antes de publicar
+          user, //Tirar antes de publicar /* Verificar*/
         });
       }
     } catch (err) {
