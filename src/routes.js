@@ -13,8 +13,9 @@ const routes = express.Router();
 routes.post("/auth", AuthController.store);
 
 routes.get("/occupations", OccupationController.index); /*Adicionar o eAdmin*/
+routes.get("/occupations/:occupationId/", OccupationController.indexs); /*Adicionar o eAdmin*/
 routes.post("/occupations", OccupationController.store); /*Adicionar o eAdmin*/
-routes.put("/occupations", OccupationController.update); /*Adicionar o eAdmin*/
+routes.put("/occupations/:occupationId/", OccupationController.update); /*Adicionar o eAdmin*/
 routes.delete("/occupations", OccupationController.delete);/*Adicionar o eAdmin*/
 
 routes.get("/users", UserController.index); /*Adicionar o eAdmin*/
@@ -23,8 +24,9 @@ routes.post("/users", UserController.store); /*Adicionar o eAdmin*/
 routes.put("/users", UserController.update); /*Adicionar o eAdmin*/
 
 routes.get("/benefits", BenefitController.index); /*Adicionar o eAdmin*/
+routes.get("/benefits/:benefitId/", BenefitController.indexs); /*Adicionar o eAdmin*/
 routes.post("/benefits", BenefitController.store); /*Adicionar o eAdmin*/
-routes.put("/benefits", BenefitController.update); /*Adicionar o eAdmin*/
+routes.put("/benefits/:benefitId/", BenefitController.update); /*Adicionar o eAdmin*/
 routes.delete("/benefits", BenefitController.delete); /*Adicionar o eAdmin*/
 
 routes.get("/records", RecordController.index); /*Adicionar o eAdmin*/

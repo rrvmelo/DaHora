@@ -49,13 +49,54 @@ module.exports = {
 
   async indexId(req, res) {
     try {
-      const { userId } = req.params;
+      let { limit } = Number(req.query.limit);
+      let { offset } = Number(req.query.offset);
 
-      const user = await User.findByPk(userId, {
+      if (!limit) {
+        limit = 10;
+      }
+
+      if (!offset) {
+        offset = 0;
+      }
+
+      const { userId } = req.params;
+      console.log(req.params.userId);
+
+      const users = await User.findAll({
+        where: { id: userId },
         include: { association: "records" },
-        attributes: { exclude: ["email", "senha", "isRH", "entrada"] },
+        offset: offset,
+        limit: limit,
       });
-      return res.json(user);
+      const total = await Record.count({ where: { userId: userId } });
+      const currentUrl = req.originalUrl;
+      const next = offset + limit;
+      const nextUrl =
+        next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+
+      const previous = offset - limit < 0 ? null : offset - limit;
+      const previousUrl =
+        previous != null
+          ? `${currentUrl}?limit=${limit}&offset=${offset}`
+          : null;
+
+      return res.send({
+        nextUrl,
+        previousUrl,
+        limit,
+        offset,
+        total,
+
+        results: users.map((item) => ({
+          id: item.id,
+          name: item.name,
+          cpf: item.cpf,
+          funcao: item.funcao,
+          ativo: item.ativo,
+          records: item.records,
+        })),
+      });
     } catch (err) {
       res.status(500).send({ message: err.message });
     }

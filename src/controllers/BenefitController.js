@@ -4,7 +4,6 @@ const Benefit = require("../models/Benefit");
 module.exports = {
   async index(req, res) {
     try {
-      console.log(req.originalUrl);
       let { limit } = Number(req.query.limit);
       let { offset } = Number(req.query.offset);
 
@@ -48,6 +47,23 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
+  async indexs(req, res) {
+    try {
+      const { benefitId } = req.params;
+      const benefits = await Benefit.findByPk(benefitId);
+      return res.send({
+        benefits: {
+          id: benefits.id,
+          beneficio: benefits.beneficio,
+          porcentagemCalculo: benefits.porcentagemCalculo,
+          valorDiario: benefits.valorDiario,
+          descricao: benefits.descricao,
+        }
+      });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
   async store(req, res) {
     try {
@@ -67,21 +83,22 @@ module.exports = {
 
   async update(req, res) {
     try {
+      const { benefitId } = req.params;
       const benefit = req.body;
-      const benefitData = await Benefit.findOne({ where: { id: benefit.id } });
+      const benefitData = await Benefit.findOne({ where: { id: benefitId } });
       if (benefitData == undefined) {
         return res.status(400).json({
           erro: true,
           mensagem: "Não atualizado, verifique os dados informados!",
         });
-      } else if (benefit.id != benefitData.id) {
+      } else if (benefitId != benefitData.id) {
         return res.status(400).json({
           erro: true,
           mensagem: "Não atualizado, verifique os dados informados!",
         });
       } else {
         await Benefit.update(benefit, {
-          where: { id: benefit.id },
+          where: { id: benefitId },
         });
 
         return res.status(200).json({

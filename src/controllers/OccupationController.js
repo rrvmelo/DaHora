@@ -49,6 +49,22 @@ module.exports = {
     }
   },
 
+  async indexs(req, res) {
+    try {
+      const { occupationId } = req.params;
+      const occupations = await Occupation.findByPk(occupationId);
+      return res.send({
+        occupations: {
+          id: occupations.id,
+          funcao: occupations.funcao,
+          vencimento: occupations.vencimento,
+        },
+      });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
+
   async store(req, res) {
     try {
       const occupation = req.body;
@@ -73,23 +89,24 @@ module.exports = {
 
   async update(req, res) {
     try {
+      const { occupationId } = req.params;
       const occupation = req.body;
       const occupationData = await Occupation.findOne({
-        where: { id: occupation.id },
+        where: { id: occupationId },
       });
       if (occupationData == undefined) {
         return res.status(400).json({
           erro: true,
           mensagem: "Não atualizado, verifique os dados informados!",
         });
-      } else if (occupation.id != occupationData.id) {
+      } else if (occupationId != occupationData.id) {
         return res.status(400).json({
           erro: true,
           mensagem: "Não atualizado, verifique os dados informados!",
         });
       } else {
         await Occupation.update(occupation, {
-          where: { id: occupation.id },
+          where: { id: occupationId },
         });
 
         return res.status(200).json({
