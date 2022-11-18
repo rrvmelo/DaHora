@@ -38,7 +38,7 @@ routes.get("/records", RecordController.index);
 routes.post("/records", RecordController.store); /*Não adicionar o eAdmin*/
 //Relação registro x usuários
 routes.get("/users/:userId/records/", RecordController.indexId);
-//Beneficios
+//Beneficios x Usuários
 routes.get("/users/:userId/benefits/", BenefitController.indexId);
 routes.post("/users/:userId/benefits/", BenefitController.storeId);
 routes.delete("/users/:userId/benefits/", BenefitController.deleteId);

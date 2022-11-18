@@ -1,5 +1,6 @@
 const Occupation = require("../models/Occupation");
 const User = require("../models/User");
+const { Op } = require("sequelize");
 
 module.exports = {
   async index(req, res) {
@@ -15,35 +16,49 @@ module.exports = {
         offset = 0;
       }
 
-      const occupations = await Occupation.findAll({
-        offset: offset,
-        limit: limit,
-      });
-      const total = await Occupation.count();
-      const currentUrl = req.originalUrl;
-      const next = offset + limit;
-      const nextUrl =
-        next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+      const { funcao } = req.query;
+      if (funcao != null) {
+        const occupations = await Occupation.findAll({
+          where: { funcao: {[Op.like]: funcao} },
+        });
+        return res.send({
+          results: occupations.map((item) => ({
+            id: item.id,
+            funcao: item.funcao,
+            vencimento: item.vencimento,
+          })),
+        });
+      } else {
+        const occupations = await Occupation.findAll({
+          offset: offset,
+          limit: limit,
+        });
+        const total = await Occupation.count();
+        const currentUrl = req.originalUrl;
+        const next = offset + limit;
+        const nextUrl =
+          next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
 
-      const previous = offset - limit < 0 ? null : offset - limit;
-      const previousUrl =
-        previous != null
-          ? `${currentUrl}?limit=${limit}&offset=${offset}`
-          : null;
+        const previous = offset - limit < 0 ? null : offset - limit;
+        const previousUrl =
+          previous != null
+            ? `${currentUrl}?limit=${limit}&offset=${offset}`
+            : null;
 
-      return res.send({
-        nextUrl,
-        previousUrl,
-        limit,
-        offset,
-        total,
+        return res.send({
+          nextUrl,
+          previousUrl,
+          limit,
+          offset,
+          total,
 
-        results: occupations.map((item) => ({
-          id: item.id,
-          funcao: item.funcao,
-          vencimento: item.vencimento,
-        })),
-      });
+          results: occupations.map((item) => ({
+            id: item.id,
+            funcao: item.funcao,
+            vencimento: item.vencimento,
+          })),
+        });
+      }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }

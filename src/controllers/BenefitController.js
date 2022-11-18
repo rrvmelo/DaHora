@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Benefit = require("../models/Benefit");
+const { Op } = require("sequelize");
 
 module.exports = {
   async index(req, res) {
@@ -15,6 +16,21 @@ module.exports = {
         offset = 0;
       }
 
+      const { beneficio } = req.query;
+      if (beneficio != null) {
+        const benefits = await Benefit.findAll({
+          where: { beneficio: {[Op.like]: beneficio} },
+        });
+        return res.send({
+          results: benefits.map((item) => ({
+            id: item.id,
+            beneficio: item.beneficio,
+            porcentagemCalculo: item.porcentagemCalculo,
+            valorDiario: item.valorDiario,
+            descricao: item.descricao,
+          })),
+        });
+      } else {
       const benefits = await Benefit.findAll({ offset: offset, limit: limit });
       const total = await Benefit.count();
       const currentUrl = req.originalUrl;
@@ -43,6 +59,7 @@ module.exports = {
           descricao: item.descricao,
         })),
       });
+    }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }

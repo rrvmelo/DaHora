@@ -1,6 +1,7 @@
 const moment = require("moment");
 const User = require("../models/User");
 const Record = require("../models/Record");
+const { Op } = require("sequelize");
 
 module.exports = {
   async index(req, res) {
@@ -15,33 +16,46 @@ module.exports = {
       if (!offset) {
         offset = 0;
       }
+      const { createdAt } = req.query;
+      if (createdAt != null) {
+        const records = await Record.findAll({
+          where: { createdAt: {[Op.like]:createdAt}  },
+        });
+        return res.send({
+          results: records.map((item) => ({
+            id: item.id,
+            userId: item.userId,
+            createdAt: item.createdAt,
+          })),
+        });
+      } else {
+        const records = await Record.findAll({ offset: offset, limit: limit });
+        const total = await Record.count();
+        const currentUrl = req.originalUrl;
+        const next = offset + limit;
+        const nextUrl =
+          next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
 
-      const records = await Record.findAll({ offset: offset, limit: limit });
-      const total = await Record.count();
-      const currentUrl = req.originalUrl;
-      const next = offset + limit;
-      const nextUrl =
-        next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+        const previous = offset - limit < 0 ? null : offset - limit;
+        const previousUrl =
+          previous != null
+            ? `${currentUrl}?limit=${limit}&offset=${offset}`
+            : null;
 
-      const previous = offset - limit < 0 ? null : offset - limit;
-      const previousUrl =
-        previous != null
-          ? `${currentUrl}?limit=${limit}&offset=${offset}`
-          : null;
+        return res.send({
+          nextUrl,
+          previousUrl,
+          limit,
+          offset,
+          total,
 
-      return res.send({
-        nextUrl,
-        previousUrl,
-        limit,
-        offset,
-        total,
-
-        results: records.map((item) => ({
-          id: item.id,
-          userId: item.userId,
-          createdAt: item.createdAt,
-        })),
-      });
+          results: records.map((item) => ({
+            id: item.id,
+            userId: item.userId,
+            createdAt: item.createdAt,
+          })),
+        });
+      }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
@@ -61,42 +75,55 @@ module.exports = {
       }
 
       const { userId } = req.params;
-      console.log(req.params.userId);
 
-      const users = await User.findAll({
-        where: { id: userId },
-        include: { association: "records" },
-        offset: offset,
-        limit: limit,
-      });
-      const total = await Record.count({ where: { userId: userId } });
-      const currentUrl = req.originalUrl;
-      const next = offset + limit;
-      const nextUrl =
-        next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+      const { createdAt } = req.query;
+      if (createdAt != null) {
+        const records = await Record.findAll({
+          where: { userId: userId, createdAt: {[Op.like]:createdAt} },
+        });
+        return res.send({
+          results: records.map((item) => ({
+            id: item.id,
+            userId: item.userId,
+            createdAt: item.createdAt,
+          })),
+        });
+      } else {
+        const users = await User.findAll({
+          where: { id: userId },
+          include: { association: "records" },
+          offset: offset,
+          limit: limit,
+        });
+        const total = await Record.count({ where: { userId: userId } });
+        const currentUrl = req.originalUrl;
+        const next = offset + limit;
+        const nextUrl =
+          next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
 
-      const previous = offset - limit < 0 ? null : offset - limit;
-      const previousUrl =
-        previous != null
-          ? `${currentUrl}?limit=${limit}&offset=${offset}`
-          : null;
+        const previous = offset - limit < 0 ? null : offset - limit;
+        const previousUrl =
+          previous != null
+            ? `${currentUrl}?limit=${limit}&offset=${offset}`
+            : null;
 
-      return res.send({
-        nextUrl,
-        previousUrl,
-        limit,
-        offset,
-        total,
+        return res.send({
+          nextUrl,
+          previousUrl,
+          limit,
+          offset,
+          total,
 
-        results: users.map((item) => ({
-          id: item.id,
-          name: item.name,
-          cpf: item.cpf,
-          funcao: item.funcao,
-          ativo: item.ativo,
-          records: item.records,
-        })),
-      });
+          results: users.map((item) => ({
+            id: item.id,
+            name: item.name,
+            cpf: item.cpf,
+            funcao: item.funcao,
+            ativo: item.ativo,
+            records: item.records,
+          })),
+        });
+      }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }

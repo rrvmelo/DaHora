@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 
 module.exports = {
   //Busca de Usuários em Geral paginada
@@ -15,8 +16,29 @@ module.exports = {
       if (!offset) {
         offset = 0;
       }
+      const { name } = req.query;
 
-      const users = await User.findAll({ offset: offset, limit: limit });
+      if (name != null) {
+        const users = await User.findAll({
+          where: { name: {[Op.like]: name} },
+        });
+        return res.send({
+          results: users.map((item) => ({
+            id: item.id,
+            name: item.name,
+            cpf: item.cpf,
+            email: item.email,
+            funcao: item.funcao,
+            entrada: item.entrada,
+            ativo: item.ativo,
+            isRH: item.isRH,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+          })),
+        });
+      } else{      
+
+       const users = await User.findAll({ offset: offset, limit: limit });
       const total = await User.count();
       const currentUrl = req.originalUrl;
       const next = offset + limit;
@@ -49,6 +71,7 @@ module.exports = {
           updatedAt: item.updatedAt,
         })),
       });
+    }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
@@ -132,7 +155,7 @@ module.exports = {
       } else {
         await User.update(user, {
           where: { id: user.id },
-        }); 
+        });
 
         return res.status(200).json({
           erro: false,
