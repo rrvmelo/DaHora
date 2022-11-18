@@ -24,6 +24,8 @@ app.use((req, res, next) => {
 
 app.use(routes);
 
-app.listen(3000, () => {
-    console.log(`Express started at http://localhost:3000`)
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.info(`Express started at http://localhost:${port}`)
 });
