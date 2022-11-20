@@ -35,6 +35,11 @@ module.exports = {
       entrada: {
         type: Sequelize.STRING,
       },
+      cargaHoraria: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 200,
+      },
       ativo: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
