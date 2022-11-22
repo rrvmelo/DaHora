@@ -1,15 +1,13 @@
-const dotenv = require ('dotenv');
-
-dotenv.config();
-
 module.exports = {
-    dialect: process.env.DB_DIALECT,
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERMAME,
-    password: process.env.DB_PASSWORD,
+    dialect: 'mysql',
+    host: 'r98du2bxwqkq3shg.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    username: 'dishdov2rmckzcg7',
+    password: 'l3c16bjez9jhs7of',
+    port: '3306',
     timezone: '-03:00',
-    database: process.env.DB_DATABASE,
+    database: 'ujaa3nmu6tjffcls',
     define: {
-        timestamps: true,
+      timestamps: true,
     },
-};
+  };
+  
