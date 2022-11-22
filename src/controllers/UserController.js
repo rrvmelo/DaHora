@@ -117,7 +117,19 @@ module.exports = {
             return res.status(200).json({
               erro: false,
               mensagem: "Usuário cadastrado com sucesso!",
-              user, //Tirar antes de publicar
+              user: {
+                id: user.id,
+                name: user.name,
+                cpf: user.cpf,
+                email: user.email,
+                funcao: user.funcao,
+                entrada: user.entrada,
+                cargaHoraria: user.cargaHoraria,
+                ativo: user.ativo,
+                isRH: user.isRH,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+              },
             });
           })
           .catch(() => {

@@ -1,10 +1,14 @@
+const dotenv = require ('dotenv');
+
+dotenv.config();
+
 module.exports = {
-    dialect: 'mysql',
-    host: 'us-cdbr-east-06.cleardb.net', //localhost
-    username: 'be5d270c2d58c8', //root
-    password: '45e39ad2', //admin
+    dialect: process.env.DB_DIALECT,
+    host: process.env.DB_HOST,
+    username: process.env.DB_USERMAME,
+    password: process.env.DB_PASSWORD,
     timezone: '-03:00',
-    database: 'heroku_ddec2fb71205c8a', //dahora
+    database: process.env.DB_DATABASE,
     define: {
         timestamps: true,
     },
