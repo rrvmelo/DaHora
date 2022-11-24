@@ -19,7 +19,7 @@ routes.get("/occupations/:occupationId/", OccupationController.indexs);
 routes.post("/occupations", OccupationController.store);
 routes.put("/occupations/:occupationId/", OccupationController.update);
 routes.delete("/occupations", OccupationController.delete);
-//Usuários
+//*****Usuários
 routes.get("/users", UserController.index);
 routes.get("/users/:userId/", UserController.indexs);
 routes.post("/users", UserController.store);
@@ -27,13 +27,16 @@ routes.put("/users", UserController.update);
 //Nova senha com autenticação
 routes.post("/forgotpass", PassController.validator);
 routes.put("/forgotpass/:userId/", ePass, PassController.update);
-//Beneficios
-routes.get("/benefits", BenefitController.index);
-routes.get("/benefits/:benefitId/", BenefitController.indexs);
-routes.post("/benefits", BenefitController.store);
-routes.put("/benefits/:benefitId/", BenefitController.update);
-routes.delete("/benefits", BenefitController.delete);
-//Registros para calculo de beneficios
+//*****Beneficios
+routes.get("/benefits", BenefitController.index); //Get Geral
+routes.get("/benefits/:benefitId/", BenefitController.indexs); //Get por id do beneficio
+routes.get("/benefits/:userId/", BenefitController.indexId); //Get beneficio x usuario
+routes.put("/benefits/:benefitId/", BenefitController.update); //Put atualiza beneficio
+routes.post("/benefits", BenefitController.store); //Post novo beneficio
+routes.post("/benefits", BenefitController.storeId); //Vincula beneficio ao usuario
+routes.delete("/benefits", BenefitController.delete); //Delete beneficio
+routes.delete("/benefits/:userId/", BenefitController.deleteId); //Delete beneficio x usuario
+//*****Registros para calculo de beneficios
 routes.get("/records", RecordController.index);
 routes.post("/records", RecordController.store); /*Não adicionar o eAdmin*/
 //Relação registro x usuários

@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { Op } = require("sequelize");
 
 module.exports = {
+  //Busca funcao por geral
   async index(req, res) {
     try {
       let { limit } = Number(req.query.limit);
@@ -19,7 +20,7 @@ module.exports = {
       const { funcao } = req.query;
       if (funcao != null) {
         const occupations = await Occupation.findAll({
-          where: { funcao: {[Op.like]: funcao} },
+          where: { funcao: { [Op.like]: funcao } },
         });
         return res.send({
           results: occupations.map((item) => ({
@@ -63,7 +64,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+//Busca funcao por id
   async indexs(req, res) {
     try {
       const { occupationId } = req.params;
@@ -79,29 +80,31 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
+//Adiciona nova funcao
+async store(req, res) {
+  try {
+    const occupation = req.body;
+    const occupationData = await Occupation.findOne({
+      where: { funcao: occupation.funcao },
+    });
 
-  async store(req, res) {
-    try {
-      const occupation = req.body;
-      const occupationData = await Occupation.findOne({
-        where: { funcao: occupation.funcao },
-      });
-
-      if (occupation.funcao == occupationData) {
-        if (occupationData == null) {
-          return res.status(400).json({
-            erro: true,
-            mensagem: " Ocupação duplicada ou nula, por favor verifique",
-          });
-        }
-      }
+    if (!occupationData){
       await Occupation.create(occupation);
-      return res.status(200);
-    } catch (err) {
-      res.status(500).send({ message: err.message });
+      return res.status(200).json({
+        erro: false,
+        mensagem: "Função criada com sucesso",
+      })
+    } else{
+      return res.status(400).json({
+        erro: true,
+        mensagem: " Ocupação duplicada ou nula, por favor verifique",
+      });
     }
-  },
-
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+},
+//Atualiza funcao
   async update(req, res) {
     try {
       const { occupationId } = req.params;
@@ -134,6 +137,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
+  //Exclui funcao
   async delete(req, res) {
     try {
       const occupation = req.body;
@@ -141,13 +145,9 @@ module.exports = {
         where: { id: occupation.id },
       });
 
-      console.log(occupationId);
-      console.log(occupationId.funcao);
       const user = await User.findOne({
         where: { funcao: occupationId.funcao },
       });
-
-      console.log(user);
 
       if (!user) {
         await Occupation.destroy({ where: { id: occupationId.id } });

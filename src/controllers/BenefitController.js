@@ -3,6 +3,7 @@ const Benefit = require("../models/Benefit");
 const { Op } = require("sequelize");
 
 module.exports = {
+  //Busca geral e filtragem
   async index(req, res) {
     try {
       let { limit } = Number(req.query.limit);
@@ -19,7 +20,7 @@ module.exports = {
       const { beneficio } = req.query;
       if (beneficio != null) {
         const benefits = await Benefit.findAll({
-          where: { beneficio: {[Op.like]: beneficio} },
+          where: { beneficio: { [Op.like]: beneficio } },
         });
         return res.send({
           results: benefits.map((item) => ({
@@ -31,39 +32,43 @@ module.exports = {
           })),
         });
       } else {
-      const benefits = await Benefit.findAll({ offset: offset, limit: limit });
-      const total = await Benefit.count();
-      const currentUrl = req.originalUrl;
-      const next = offset + limit;
-      const nextUrl =
-        next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
+        const benefits = await Benefit.findAll({
+          offset: offset,
+          limit: limit,
+        });
+        const total = await Benefit.count();
+        const currentUrl = req.originalUrl;
+        const next = offset + limit;
+        const nextUrl =
+          next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
 
-      const previous = offset - limit < 0 ? null : offset - limit;
-      const previousUrl =
-        previous != null
-          ? `${currentUrl}?limit=${limit}&offset=${offset}`
-          : null;
+        const previous = offset - limit < 0 ? null : offset - limit;
+        const previousUrl =
+          previous != null
+            ? `${currentUrl}?limit=${limit}&offset=${offset}`
+            : null;
 
-      return res.send({
-        nextUrl,
-        previousUrl,
-        limit,
-        offset,
-        total,
+        return res.send({
+          nextUrl,
+          previousUrl,
+          limit,
+          offset,
+          total,
 
-        results: benefits.map((item) => ({
-          id: item.id,
-          beneficio: item.beneficio,
-          porcentagemCalculo: item.porcentagemCalculo,
-          valorDiario: item.valorDiario,
-          descricao: item.descricao,
-        })),
-      });
-    }
+          results: benefits.map((item) => ({
+            id: item.id,
+            beneficio: item.beneficio,
+            porcentagemCalculo: item.porcentagemCalculo,
+            valorDiario: item.valorDiario,
+            descricao: item.descricao,
+          })),
+        });
+      }
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
   },
+  //Busca de Beneficio passando id no Params
   async indexs(req, res) {
     try {
       const { benefitId } = req.params;
@@ -75,13 +80,13 @@ module.exports = {
           porcentagemCalculo: benefits.porcentagemCalculo,
           valorDiario: benefits.valorDiario,
           descricao: benefits.descricao,
-        }
+        },
       });
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Adiciona novo beneficio
   async store(req, res) {
     try {
       const { beneficio, valorDiario, descricao } = req.body;
@@ -97,7 +102,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Atualiza Beneficio
   async update(req, res) {
     try {
       const { benefitId } = req.params;
@@ -128,9 +133,29 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
+//Excluir beneficio
+  async delete(req, res) {
+    try {
+      const { benefitId } = req.params;
 
-  async delete(req, res) {},/*Verificar*/
-
+      const benefit = await Benefit.find({ where: { id: benefitId } });
+      if (!benefit) {
+        return res.status(401).json({
+          erro: true,
+          mensagem: "Beneficio não encontrado, por favor verifique",
+        });
+      } else{
+        await Benefit.destroy({ where: { id: benefitId } });
+        return res.status(200).json({
+          erro: false,
+          mensagem: "Beneficio Excluido",
+        });
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  } ,
+//Busca o beneficio vinculado ao usuario
   async indexId(req, res) {
     try {
       const { userId } = req.params;
@@ -143,7 +168,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Vincula beneficio ao usuario
   async storeId(req, res) {
     try {
       const { userId } = req.params;
@@ -166,7 +191,7 @@ module.exports = {
 
       return res.status(200).json({
         erro: false,
-        mensagem: "Beneficio OK",
+        mensagem: "Beneficio Adicionado",
         user,
         benefit,
       });
@@ -174,7 +199,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-
+  //Remove beneficio do usuario
   async deleteId(req, res) {
     try {
       const { userId } = req.params;
