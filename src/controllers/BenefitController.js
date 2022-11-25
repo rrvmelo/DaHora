@@ -133,7 +133,7 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
-//Excluir beneficio
+  //Excluir beneficio
   async delete(req, res) {
     try {
       const { benefitId } = req.params;
@@ -144,7 +144,7 @@ module.exports = {
           erro: true,
           mensagem: "Beneficio não encontrado, por favor verifique",
         });
-      } else{
+      } else {
         await Benefit.destroy({ where: { id: benefitId } });
         return res.status(200).json({
           erro: false,
@@ -154,22 +154,32 @@ module.exports = {
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
-  } ,
-//Busca o beneficio vinculado ao usuario
+  },
+
+  //Busca o beneficio vinculado ao usuario
   async indexId(req, res) {
     try {
       const { userId } = req.params;
 
-      const user = await User.findByPk(userId, {
+      const { benefits } = await User.findByPk(userId, {
         include: { association: "benefits", through: { attributes: [] } },
       });
-      return res.json(user.benefits);
+
+      return res.send({
+        beneficio: benefits.map((item) => ({
+          id: item.id,
+          beneficio: item.beneficio,
+          porcentagemCalculo: item.porcentagemCalculo,
+          valorDiario: item.valorDiario,
+          descricao: item.descricao,
+        })),
+      });
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
   },
   //Vincula beneficio ao usuario
-  async storeId(req, res) {
+  async updateId(req, res) {
     try {
       const { userId } = req.params;
       const { beneficio } = req.body;
@@ -178,48 +188,43 @@ module.exports = {
 
       if (!user) {
         return res.status(400).json({
-          erro: false,
+          erro: true,
           mensagem: "Usuário não encontrado!",
         });
       }
 
-      const benefit = await Benefit.findOne({
-        where: { beneficio: beneficio },
+      const { benefits } = await User.findByPk(userId, {
+        include: { association: "benefits", through: { attributes: [] } },
       });
 
-      await user.addBenefit(benefit);
+      const delbeneficio = benefits.map((benefit) => benefit.id);
+      console.log("=====>>", delbeneficio);
 
-      return res.status(200).json({
+      user.removeBenefits(delbeneficio);
+
+      for (let index = 0; index < beneficio.length; index++) {
+        const benefit = await Benefit.findOne({
+          where: { id: beneficio[index] },
+        });
+        if (!benefit) {
+          return res.status(400).send({
+            erro: true,
+            mensagem: "Beneficio invalido, por favor verifique",
+          });
+        }
+      }
+
+      for (let index = 0; index < beneficio.length; index++) {
+        const benefit = await Benefit.findOne({
+          where: { id: beneficio[index] },
+        });
+
+        user.addBenefits(benefit);
+      }
+      return res.status(200).send({
         erro: false,
-        mensagem: "Beneficio Adicionado",
-        user,
-        benefit,
+        mensagem: "Beneficio(s) adicionado(s) ou alterado(s) com sucesso",
       });
-    } catch (err) {
-      res.status(500).send({ message: err.message });
-    }
-  },
-  //Remove beneficio do usuario
-  async deleteId(req, res) {
-    try {
-      const { userId } = req.params;
-      const { beneficio } = req.body;
-      const user = await User.findByPk(userId);
-
-      if (!user) {
-        return res.status(400).json({
-          erro: false,
-          mensagem: "Usuário não encontrado!",
-        });
-      }
-
-      const benefit = await Benefit.findOne({
-        where: { beneficio: beneficio },
-      });
-
-      await user.removeBenefit(benefit);
-
-      return res.status(200).json();
     } catch (err) {
       res.status(500).send({ message: err.message });
     }
